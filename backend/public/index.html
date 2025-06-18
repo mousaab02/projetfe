@@ -21,7 +21,7 @@
         email: e.target.email.value,
         message: e.target.message.value
       };
-      const res = await fetch('/api/formulaire', {
+      const res = await fetch('http://20.199.66.44:3000//api/formulaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
