@@ -24,5 +24,5 @@ app.use('/api/formulaire', formulaireRoutes);
 
 // Lancement du serveur
 app.listen(PORT, () => {
-    console.log(`Serveur lancé sur http://localhost:${PORT}`);
+    console.log(`Serveur lancé sur http://127.0.0.1:${PORT}`);
 });
