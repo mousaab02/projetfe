@@ -2,33 +2,36 @@ name: CI/CD Backend Node.js
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
 
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: backend
-
     steps:
-      - name: Cloner le dépôt
-        uses: actions/checkout@v3
+    - name: Cloner le dépôt
+      uses: actions/checkout@v2
 
-      - name: Installer Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+    - name: Installer Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
 
-      - name: Installer les dépendances
-        run: npm install
+    - name: Installer les dépendances
+      run: npm install
+      working-directory: backend
 
-      - name: Lancer les tests
-        run: npm test || echo "Aucun test défini"
+    - name: Tester l'application (optionnel)
+      run: npm test || echo "Pas de tests définis"
+      working-directory: backend
 
-      - name: Build terminé
-        run: echo "✅ Build OK"
+    - name: Construire l'image Docker
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/projetfe-backend ./backend
+
+    - name: Se connecter à Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Pousser l'image sur Docker Hub
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/projetfe-backend
