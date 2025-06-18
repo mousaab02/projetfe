@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire</title>
+</head>
+<body>
+  <h2>Formulaire</h2>
+  <form id="formulaire">
+    <input type="text" name="nom" placeholder="Nom" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <textarea name="message" placeholder="Message"></textarea><br>
+    <button type="submit">Envoyer</button>
+  </form>
+
+  <script>
+    document.getElementById('formulaire').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        nom: e.target.nom.value,
+        email: e.target.email.value,
+        message: e.target.message.value
+      };
+      const res = await fetch('/api/formulaire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      alert(result.message);
+    });
+  </script>
+</body>
+</html>
