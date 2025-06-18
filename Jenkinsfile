@@ -1,6 +1,9 @@
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            image 'node:18'
+        }
+    }
     stages {
         stage('Cloner le dépôt') {
             steps {
@@ -19,8 +22,7 @@ pipeline {
         stage('Lancer les tests') {
             steps {
                 dir('backend') {
-                    // Change ceci selon ton framework de test
-                    sh 'echo "Pas encore de tests"'
+                    sh 'npm test'
                 }
             }
         }
@@ -28,7 +30,7 @@ pipeline {
         stage('Démarrer l\'application') {
             steps {
                 dir('backend') {
-                    sh 'node server.js &'
+                    sh 'node server.js'
                 }
             }
         }
