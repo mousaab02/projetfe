@@ -1,27 +1,44 @@
-const express = require('express');
-const router = express.Router();
-const Formulaire = require('../models/Formulaire');
+const request = require('supertest');
+const mongoose = require('mongoose');
+const app = require('../app');
 
-// Route POST avec validation
-router.post('/', async (req, res) => {
-    const { nom, email, message } = req.body;
+describe('POST /api/formulaire', () => {
+  it('devrait enregistrer un formulaire avec succès', async () => {
+    const response = await request(app)
+      .post('/api/formulaire')
+      .send({
+        nom: 'Test Nom',
+        email: 'test@example.com',
+        message: 'Ceci est un message de test'
+      });
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('message', 'Formulaire enregistré !');
+  });
 
-    if (!nom || !email) {
-        return res.status(400).json({ message: 'Nom et email sont obligatoires' });
-    }
+  it('devrait échouer si des champs sont manquants', async () => {
+    const response = await request(app)
+      .post('/api/formulaire')
+      .send({
+        nom: '', 
+        email: 'test@example.com',
+      });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('message', 'Nom et email sont obligatoires');
+  });
 
-    try {
-        // Simuler une erreur volontaire pour test
-        if (req.body.nom === 'error') {
-            throw new Error('Erreur test volontaire');
-        }
-
-        const nouveauFormulaire = new Formulaire({ nom, email, message });
-        await nouveauFormulaire.save();
-        res.status(201).json({ message: 'Formulaire enregistré !' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+  it('devrait échouer avec une erreur volontaire', async () => {
+    const response = await request(app)
+      .post('/api/formulaire')
+      .send({
+        nom: 'error',
+        email: 'test@example.com',
+        message: 'Test erreur volontaire'
+      });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('error', 'Erreur test volontaire');
+  });
 });
 
-module.exports = router;
+afterAll(async () => {
+  await mongoose.disconnect();
+});
