@@ -11,6 +11,11 @@ router.post('/', async (req, res) => {
     }
 
     try {
+        // Simuler une erreur volontaire pour test
+        if (req.body.nom === 'error') {
+            throw new Error('Erreur test volontaire');
+        }
+
         const nouveauFormulaire = new Formulaire({ nom, email, message });
         await nouveauFormulaire.save();
         res.status(201).json({ message: 'Formulaire enregistré !' });
