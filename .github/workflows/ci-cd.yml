@@ -25,8 +25,10 @@ jobs:
 
     - name: Run tests
       run: |
-        cd backend
-        npx test
+          cd backend
+          chmod +x ./node_modules/.bin/jest
+          npm test -- --detectOpenHandles
+      
       continue-on-error: false  #  bloque le pipeline si échec
 
     - name: Build Docker image
