@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     try {
         const nouveauFormulaire = new Formulaire({ nom, email, message });
         await nouveauFormulaire.save();
-        res.status(201).json({ message: 'Formulaire enregistré !' });
+        res.status(400).json({ message: 'Formulaire enregistré !' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
