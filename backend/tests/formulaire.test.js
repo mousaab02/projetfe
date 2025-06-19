@@ -22,9 +22,23 @@ describe('POST /api/formulaire', () => {
         nom: '', 
         email: 'test@example.com',
       });
+      
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty('message', 'Nom et email sont obligatoires');
   }, 15000);
+
+  it('devrait échouer avec une erreur volontaire', async () => {
+    const response = await request(app)
+      .post('/api/formulaire')
+      .send({
+        nom: 'error',
+        email: 'test@example.com',
+        message: 'Test erreur volontaire'
+      });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('error', 'Erreur test volontaire');
+  });
+  
 });
 
 // Déconnexion de Mongoose après tous les tests
