@@ -22,11 +22,9 @@ describe('POST /api/formulaire', () => {
         nom: '', 
         email: 'test@example.com',
       });
-      
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty('message', 'Nom et email sont obligatoires');
   }, 15000);
-  
 });
 
 // Déconnexion de Mongoose après tous les tests
