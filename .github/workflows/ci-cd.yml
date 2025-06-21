@@ -37,6 +37,11 @@ jobs:
 
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+          args: >
+            -Dsonar.projectKey=mousaab02_projetfe
+            -Dsonar.organization=mousaab02
+            -Dsonar.sources=backend
 
     - name: Build Docker image
       run: |
