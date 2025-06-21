@@ -3,77 +3,59 @@ name: CI/CD Backend Node.js
 on:
   push:
     branches:
-      - master
+      - master  # ou main selon ta branche principale
 
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test -- --detectOpenHandles
-
-  sonarcloud:
-    needs: build-test
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: ./backend
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: "https://sonarcloud.io"
-
-  docker-deploy:
-    needs: build-test
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # requis pour SonarCloud
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
 
-      - name: Build Docker image
-        run: docker build -t moulaa22/projetfe-backend ./backend
+    - name: Install dependencies
+      run: |
+        cd backend
+        npm install
 
-      - name: Log in to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+    - name: Run tests
+      run: |
+        cd backend
+        chmod +x ./node_modules/.bin/jest
+        npm test -- --detectOpenHandles
+      # continue-on-error: false  # c’est la valeur par défaut donc tu peux l’enlever
 
-      - name: Push image to DockerHub
-        run: docker push moulaa22/projetfe-backend
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarqube-scan-action@v5
 
-      - name: Deploy to Azure VM via SSH
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            docker stop projetfe-backend || true
-            docker rm projetfe-backend || true
-            docker pull moulaa22/projetfe-backend
-            docker run -d --name projetfe-backend -p 3000:3000 moulaa22/projetfe-backend
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t moulaa22/projetfe-backend ./backend
+
+    - name: Log in to DockerHub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Push image to DockerHub
+      run: docker push moulaa22/projetfe-backend
+
+    - name: Deploy to Azure VM via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        key: ${{ secrets.DEPLOY_KEY }}
+        script: |
+          docker stop projetfe-backend || true
+          docker rm projetfe-backend || true
+          docker pull moulaa22/projetfe-backend
+          docker run -d --name projetfe-backend -p 3000:3000 moulaa22/projetfe-backend
