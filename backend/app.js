@@ -10,7 +10,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 // Sert les fichiers statiques du frontend
-app.use(express.static(path.join(__dirname, '../frontend')));
 
 
 mongoose.connect('mongodb+srv://moulaa22:Tetouan1234567@cluster0.ijhr3kn.mongodb.net/formulairedb', {
@@ -21,9 +20,6 @@ mongoose.connect('mongodb+srv://moulaa22:Tetouan1234567@cluster0.ijhr3kn.mongodb
 
 app.use('/api/formulaire', formulaireRoutes);
 
-// (Optionnel) Sert index.html si quelqu’un accède à /
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
+
 
 module.exports = app;

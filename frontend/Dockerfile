@@ -1,8 +1,6 @@
 # Utilise une image officielle Nginx
 FROM nginx:alpine
 
-# Supprime la config par défaut de Nginx
-RUN rm -rf /usr/share/nginx/html/*
 
 # Copie ton code HTML statique dans le bon dossier
 COPY . /usr/share/nginx/html
