@@ -2,13 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 const formulaireRoutes = require('./routes/formulaireRoutes');
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public'));
+// Sert les fichiers statiques du frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 
 mongoose.connect('mongodb+srv://moulaa22:Tetouan1234567@cluster0.ijhr3kn.mongodb.net/formulairedb', {
   useNewUrlParser: true,
@@ -17,5 +20,10 @@ mongoose.connect('mongodb+srv://moulaa22:Tetouan1234567@cluster0.ijhr3kn.mongodb
   .catch(err => console.error(err));
 
 app.use('/api/formulaire', formulaireRoutes);
+
+// (Optionnel) Sert index.html si quelqu’un accède à /
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 module.exports = app;

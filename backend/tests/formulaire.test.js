@@ -27,7 +27,7 @@ describe('POST /api/formulaire', () => {
   }, 15000);
 });
 
-// Déconnexion de Mongoose après tous les tests
+// Déconnexion de Mongoose après tous les tests, Important pour fermer proprement la connexion MongoDB après les tests.
 afterAll(async () => {
   await mongoose.disconnect();
 });
