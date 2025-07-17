@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Formulaire DXC Technology</title>
+  
+  <!-- Bootstrap CSS CDN -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      background: linear-gradient(to bottom, #9a0786 0%, #c48cd6 50%, white 100%);
+  min-height: 100vh;
+  margin: 0;
+      color: #2d2d2d;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    header {
+      background-color: #ffe2fb;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    header img {
+      height: 40px;
+    }
+    header h1 {
+      color: rgb(118, 14, 105);
+      font-weight: 600;
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    main {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    button {
+      background-color: #9a0786;
+      border-color: #9a0786;
+    }
+    button:hover {
+      background-color: #80006d;
+      border-color: #9a0786;
+    }
+    .custom-btn {
+  background-color: #9a0786;
+  border-color: #9a0786;
+  color: white;
+}
+
+.custom-btn:hover {
+  background-color: #7a0565;
+  border-color: #7a0565;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <img
+      src="https://images.seeklogo.com/logo-png/40/2/dxc-technology-logo-png_seeklogo-405696.png"
+      alt="Logo DXC Technology"
+    />
+    <h1>Formulaire DXC Technology</h1>
+  </header>
+
+  <main>
+    <h2 class="mb-4">Contactez-nous</h2>
+    <form id="formulaire">
+      <div class="mb-3">
+        <input
+          type="text"
+          name="nom"
+          class="form-control"
+          placeholder="Nom"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <input
+          type="email"
+          name="email"
+          class="form-control"
+          placeholder="Email"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <textarea
+          name="message"
+          class="form-control"
+          rows="4"
+          placeholder="Votre message"
+        ></textarea>
+      </div>      
+      <button type="submit" class="btn custom-btn w-100">Envoyer</button>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById('formulaire').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        nom: e.target.nom.value,
+        email: e.target.email.value,
+        message: e.target.message.value
+      };
+      const API_BASE_URL = 'http://localhost:3000';
+      const res = await fetch(`${API_BASE_URL}/api/formulaire`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      alert(result.message);
+      if (res.ok) e.target.reset();
+    });
+  </script>
+</body>
+</html>

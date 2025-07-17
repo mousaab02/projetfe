@@ -1,4 +1,4 @@
-name: CI/CD Backend Node.js
+name: CI/CD FullStack App
 
 on:
   push:
@@ -52,6 +52,13 @@ jobs:
 
     - name: Push image to DockerHub
       run: docker push moulaa22/projetfe-backend
+    
+    - name: Build Frontend Docker image
+      run: |
+        docker build -t moulaa22/projetfe-frontend ./frontend
+
+    - name: Push Frontend image to DockerHub
+      run: docker push moulaa22/projetfe-frontend
 
     - name: Deploy to Azure VM via SSH
       uses: appleboy/ssh-action@v1.0.0
@@ -64,3 +71,8 @@ jobs:
           docker rm projetfe-backend || true
           docker pull moulaa22/projetfe-backend
           docker run -d --name projetfe-backend -p 3000:3000 moulaa22/projetfe-backend
+          docker stop projetfe-frontend || true
+          docker rm projetfe-frontend || true
+          docker pull moulaa22/projetfe-frontend
+          docker run -d --name projetfe-frontend -p 80:80 moulaa22/projetfe-frontend
+
