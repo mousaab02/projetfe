@@ -4,21 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Formulaire DXC Technology</title>
-  
-  <!-- Bootstrap CSS CDN -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
   <style>
     body {
       background: linear-gradient(to bottom, #9a0786 0%, #c48cd6 50%, white 100%);
-  min-height: 100vh;
-  margin: 0;
+      min-height: 100vh;
+      margin: 0;
       color: #2d2d2d;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
     header {
       background-color: #ffe2fb;
       padding: 10px 20px;
@@ -26,85 +24,159 @@
       align-items: center;
       gap: 15px;
     }
+
     header img {
       height: 40px;
     }
+
     header h1 {
       color: rgb(118, 14, 105);
       font-weight: 600;
       margin: 0;
       font-size: 1.5rem;
     }
+
+    .custom-btn {
+      background-color: #9a0786;
+      border-color: #9a0786;
+      color: white;
+    }
+
+    .custom-btn:hover {
+      background-color: #7a0565;
+      border-color: #7a0565;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 40px;
+    }
+
+    .carousel-inner img {
+      height: 400px;
+      object-fit: cover;
+    }
+
+    .container-main {
+      display: flex;
+      justify-content: space-between;
+      padding: 30px 5%;
+      flex-wrap: wrap;
+    }
+
+    .carousel-container {
+      flex: 1 1 60%;
+      margin-right: 30px;
+      height: 400px;
+    }
+
     main {
-      max-width: 500px;
-      margin: 40px auto;
+      flex: 1 1 35%;
       background: white;
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    button {
-      background-color: #9a0786;
-      border-color: #9a0786;
-    }
-    button:hover {
-      background-color: #80006d;
-      border-color: #9a0786;
-    }
-    .custom-btn {
-  background-color: #9a0786;
-  border-color: #9a0786;
-  color: white;
-}
 
-.custom-btn:hover {
-  background-color: #7a0565;
-  border-color: #7a0565;
-}
+    .about {
+      padding: 30px 5%;
+    }
 
   </style>
 </head>
 <body>
-  <header>
-    <img
-      src="https://images.seeklogo.com/logo-png/40/2/dxc-technology-logo-png_seeklogo-405696.png"
-      alt="Logo DXC Technology"
-    />
-    <h1>Formulaire DXC Technology</h1>
-  </header>
 
-  <main>
-    <h2 class="mb-4">Contactez-nous</h2>
-    <form id="formulaire">
-      <div class="mb-3">
-        <input
-          type="text"
-          name="nom"
-          class="form-control"
-          placeholder="Nom"
-          required
-        />
+  <!-- Navbar statique -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+    <a class="navbar-brand" href="#">
+      <img src="https://images.seeklogo.com/logo-png/40/2/dxc-technology-logo-png_seeklogo-405696.png" alt="Logo" height="30">
+      DXC Technology
+    </a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">À propos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- Section principale avec carrousel + formulaire -->
+  <div class="container-main">
+    
+    <!-- Carrousel d’images -->
+    <div class="carousel-container">
+      <div id="carouselDXC" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner rounded">
+          <div class="carousel-item active">
+            <img src="https://imgs.search.brave.com/x8Sh8SCfQJpayxx55CYRF_kuqWMg_oPy1oNsqOzhV1M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/amUtcmVjcnV0ZS5j/b20vc3RvcmFnZS8y/MDI1LzA1L0NvcGll/LWRlLU9mZnJlLWRl/bXBsb2ktMjAyNS0w/NS0yNVQyMjM2MDQu/NDc0LTY5Nng0ODAu/d2VicA" class="d-block w-100" alt="Slide 1" />
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Innovation</h5>
+              <p>Des solutions numériques avancées</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://imgs.search.brave.com/WJyBttDRikZh_keRRsWnQ7vR4kYiSGATF9HoqsJSAbc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bGVjb25vbWlzdGUu/Y29tL3NpdGVzL2Rl/ZmF1bHQvZmlsZXMv/ZWNvNy9wdWJsaWMv/ZHhjX3RlY2hub2xv/Z3lfYm5fYm4uanBn" class="d-block w-100" alt="Slide 2" />
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Secteur Public</h5>
+              <p>Amélioration des services gouvernementaux</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://i.ibb.co/PswgFSnj/Capture-d-cran-2025-07-17-162819.png" class="d-block w-100" alt="Slide 3" />
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Partenariats Globaux</h5>
+              <p>Collaboration avec les leaders mondiaux</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselDXC" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselDXC" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
       </div>
-      <div class="mb-3">
-        <input
-          type="email"
-          name="email"
-          class="form-control"
-          placeholder="Email"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <textarea
-          name="message"
-          class="form-control"
-          rows="4"
-          placeholder="Votre message"
-        ></textarea>
-      </div>      
-      <button type="submit" class="btn custom-btn w-100">Envoyer</button>
-    </form>
-  </main>
+    </div>
+
+    <!-- Formulaire -->
+    <main>
+      <h2 class="mb-4">Contactez-nous</h2>
+      <form id="formulaire">
+        <div class="mb-3">
+          <input type="text" name="nom" class="form-control" placeholder="Nom" required />
+        </div>
+        <div class="mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email" required />
+        </div>
+        <div class="mb-3">
+          <textarea name="message" class="form-control" rows="4" placeholder="Votre message"></textarea>
+        </div>
+        <button type="submit" class="btn custom-btn w-100">Envoyer</button>
+      </form>
+    </main>
+  </div>
+
+  <!-- Section À propos -->
+  <section class="about">
+    <h3>À propos de DXC Technology</h3>
+    <p>
+      DXC Technology aide les entreprises à moderniser leurs opérations et à innover grâce à des solutions technologiques de pointe.
+      Présente dans plus de 70 pays, DXC se spécialise dans la transformation numérique, les services cloud, la cybersécurité, et bien plus encore.
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 DXC Technology. Tous droits réservés. | <a href="#">Politique de confidentialité</a>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     document.getElementById('formulaire').addEventListener('submit', async (e) => {
@@ -125,5 +197,6 @@
       if (res.ok) e.target.reset();
     });
   </script>
+
 </body>
 </html>
