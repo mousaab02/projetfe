@@ -23,8 +23,12 @@ jobs:
     - name: Install backend dependencies
       run: cd backend && npm install
 
-    - name: Run backend tests
-      run: cd backend && npm test -- --detectOpenHandles
+    - name: Run tests
+      run: |
+        cd backend
+        chmod +x ./node_modules/.bin/jest
+        npm test -- --detectOpenHandles
+      # continue-on-error: false  # c’est la valeur par défaut donc tu peux l’enlever
     
 
     - name: SonarCloud Scan
