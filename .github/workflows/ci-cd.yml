@@ -13,66 +13,61 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # requis pour SonarCloud
+        fetch-depth: 0
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
-    - name: Install dependencies
-      run: |
-        cd backend
-        npm install
+    - name: Install backend dependencies
+      run: cd backend && npm install
 
-    - name: Run tests
-      run: |
-        cd backend
-        chmod +x ./node_modules/.bin/jest
-        npm test -- --detectOpenHandles
-      # continue-on-error: false  # c’est la valeur par défaut donc tu peux l’enlever
+    - name: Run backend tests
+      run: cd backend && npm test -- --detectOpenHandles
 
     - name: SonarCloud Scan
       uses: SonarSource/sonarqube-scan-action@v5
-
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
-          args: >
-            -Dsonar.projectKey=mousaab02_projetfe
-            -Dsonar.organization=mousaab02
-            -Dsonar.sources=backend
+        args: >
+          -Dsonar.projectKey=mousaab02_projetfe
+          -Dsonar.organization=mousaab02
+          -Dsonar.sources=backend
 
-    - name: Build Docker image
-      run: |
-        docker build -t moulaa22/projetfe-backend ./backend
+    - name: Docker build backend
+      run: docker build -t moulaa22/projetfe-backend ./backend
 
-    - name: Log in to DockerHub
+    - name: Docker build frontend
+      run: docker build -t moulaa22/projetfe-frontend ./frontend
+
+    - name: DockerHub login
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: Push image to DockerHub
+    - name: Docker push backend
       run: docker push moulaa22/projetfe-backend
-    
-    - name: Build Frontend Docker image
-      run: |
-        docker build -t moulaa22/projetfe-frontend ./frontend
 
-    - name: Push Frontend image to DockerHub
+    - name: Docker push frontend
       run: docker push moulaa22/projetfe-frontend
 
-    - name: Deploy to Azure VM via SSH
+    # ===== Terraform execution on VM via SSH =====
+    - name: Run Terraform via SSH on Azure VM
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.DEPLOY_HOST }}
         username: ${{ secrets.DEPLOY_USER }}
         key: ${{ secrets.DEPLOY_KEY }}
         script: |
-          docker stop projetfe-backend || true
-          docker rm projetfe-backend || true
-          docker pull moulaa22/projetfe-backend
-          docker run -d --name projetfe-backend -p 3000:3000 moulaa22/projetfe-backend
-          docker stop projetfe-frontend || true
-          docker rm projetfe-frontend || true
-          docker pull moulaa22/projetfe-frontend
-          docker run -d --name projetfe-frontend -p 80:80 moulaa22/projetfe-frontend
+          bash /home/azureuser/projetfe/iac-devops/terraform/deploy_terraform.sh
 
+    # ===== Ansible Deployment =====
+    - name: Deploy with Ansible on Azure VM
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        key: ${{ secrets.DEPLOY_KEY }}
+        script: |
+          cd /home/azureuser/projetfe/iac-devops/ansible
+          ansible-playbook -i hosts full_setup_and_deploy.yml
