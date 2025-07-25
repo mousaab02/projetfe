@@ -26,8 +26,7 @@ jobs:
     - name: Run tests
       run: |
         cd backend
-        chmod +x ./node_modules/.bin/jest
-        npm test -- --detectOpenHandles
+        npx jest --detectOpenHandles
     
 
     - name: SonarCloud Scan
