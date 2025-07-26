@@ -1,4 +1,8 @@
 ---
+- name: DEBUG | On est bien dans le rôle monitoring
+  debug:
+    msg: "🚀 Le rôle monitoring est en cours d'exécution"
+
 - name: Vérifier si la collection Docker est déjà installée
   stat:
     path: /root/.ansible/collections/ansible_collections/community/docker
