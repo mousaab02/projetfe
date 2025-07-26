@@ -1,0 +1,30 @@
+---
+- name: Vérifier si la collection Docker est déjà installée
+  stat:
+    path: /root/.ansible/collections/ansible_collections/community/docker
+  register: docker_collection_installed
+
+- name: Installer la collection community.docker si elle n’est pas présente
+  shell: ansible-galaxy collection install community.docker
+  when: not docker_collection_installed.stat.exists
+
+- name: Créer un dossier /opt/monitoring sur la VM
+  file:
+    path: /opt/monitoring
+    state: directory
+    mode: '0755'
+
+- name: Copier docker-compose.yml
+  copy:
+    src: docker-compose.yml
+    dest: /opt/monitoring/docker-compose.yml
+
+- name: Copier prometheus.yml
+  copy:
+    src: prometheus.yml
+    dest: /opt/monitoring/prometheus.yml
+
+- name: Lancer les containers Prometheus et Node Exporter
+  community.docker.docker_compose:
+    project_src: /opt/monitoring
+    state: present

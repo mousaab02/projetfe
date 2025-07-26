@@ -60,6 +60,12 @@
         groups: docker
         append: yes
 
+- name: Deploy monitoring tools (Prometheus + Node Exporter)
+  hosts: jenkins_vm
+  become: yes
+  roles:
+    - monitoring
+
 - name: Deploy backend and frontend Docker containers
   hosts: jenkins_vm
   become: yes
