@@ -57,7 +57,7 @@ resource "azurerm_public_ip" "jenkins_vm_ip" {
 resource "azurerm_ssh_public_key" "jenkins_ssh_key" {
   name                = "jenkins-vm_key"
   location            = azurerm_resource_group.devops-rg.location
-  resource_group_name = "DEVOPS-RG"
+  resource_group_name = azurerm_resource_group.devops-rg.name
 
   public_key = var.public_ssh_key
 }
@@ -113,7 +113,7 @@ resource "azurerm_linux_virtual_machine" "jenkins_vm" {
 resource "azurerm_managed_disk" "jenkins_os_disk" {
   name                 = "jenkins-vm_OsDisk_1_237eab073e3c48b49cc8837255375e1f"
   location             = azurerm_resource_group.devops-rg.location
-  resource_group_name  = "DEVOPS-RG"
+  resource_group_name  = azurerm_resource_group.devops-rg.name
   storage_account_type = "Premium_LRS"
   create_option        = "FromImage"
   disk_size_gb         = 30
@@ -190,6 +190,18 @@ resource "azurerm_network_security_group" "jenkins_nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+  
+  security_rule {
+    name                       = "Allow-Prometheus-9090"
+    priority                   = 302
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "9090"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
