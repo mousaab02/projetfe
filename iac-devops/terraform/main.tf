@@ -205,6 +205,7 @@ resource "azurerm_network_security_group" "jenkins_nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  
 
     security_rule {
     name                       = "Allow-Grafana-3000"
