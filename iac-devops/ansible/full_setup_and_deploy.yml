@@ -1,5 +1,5 @@
 ---
-- name: Setup Jenkins VM with Docker
+- name: Setup Jenkins VM with Docker and monitoring dependencies
   hosts: jenkins_vm
   become: yes
   tasks:
@@ -9,7 +9,12 @@
 
     - name: Remove old Docker packages if any
       apt:
-        name: ['docker', 'docker-engine', 'docker.io', 'containerd', 'runc']
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
         state: absent
         purge: yes
 
@@ -20,6 +25,7 @@
           - curl
           - gnupg
           - lsb-release
+          - python3-pip
         state: present
 
     - name: Create keyrings directory
@@ -45,7 +51,10 @@
 
     - name: Install Docker packages
       apt:
-        name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
         state: present
 
     - name: Enable and start Docker service
@@ -60,11 +69,55 @@
         groups: docker
         append: yes
 
+    - name: Upgrade pip3
+      pip:
+        name: pip
+        state: latest
+
+    - name: Install compatible docker python module
+      pip:
+        name: docker
+        state: latest
+
+    - name: Install docker-compose python module
+      pip:
+        name: docker-compose
+        state: latest
+
 - name: Deploy monitoring tools (Prometheus + Node Exporter)
   hosts: jenkins_vm
   become: yes
-  roles:
-    - monitoring
+  tasks:
+    - name: Vérifier si la collection Docker est déjà installée
+      stat:
+        path: /root/.ansible/collections/ansible_collections/community/docker
+      register: docker_collection_installed
+
+    - name: Installer la collection community.docker si elle n’est pas présente
+      shell: ansible-galaxy collection install community.docker
+      when: not docker_collection_installed.stat.exists
+
+    - name: Créer un dossier /opt/monitoring sur la VM
+      file:
+        path: /opt/monitoring
+        state: directory
+        mode: '0755'
+
+    - name: Copier docker-compose.yml
+      copy:
+        src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files/docker-compose.yml
+        dest: /opt/monitoring/docker-compose.yml
+
+    - name: Copier prometheus.yml
+      copy:
+        src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files/prometheus.yml
+        dest: /opt/monitoring/prometheus.yml
+
+    - name: Lancer les containers Prometheus et Node Exporter
+      community.docker.docker_compose_v2:
+        project_src: /opt/monitoring
+        state: present
+
 
 - name: Deploy backend and frontend Docker containers
   hosts: jenkins_vm

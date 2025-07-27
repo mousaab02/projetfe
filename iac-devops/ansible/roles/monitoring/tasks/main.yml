@@ -1,7 +1,7 @@
 ---
 - name: DEBUG | On est bien dans le rôle monitoring
   debug:
-    msg: "🚀 Le rôle monitoring est en cours d'exécution"
+    msg: "?? Le rôle monitoring est en cours d'exécution"
 
 - name: Vérifier si la collection Docker est déjà installée
   stat:
@@ -12,21 +12,22 @@
   shell: ansible-galaxy collection install community.docker
   when: not docker_collection_installed.stat.exists
 
-- name: Créer un dossier /opt/monitoring sur la VM
+- name: Créer (ou assurer) le dossier /opt/monitoring sur la VM
   file:
     path: /opt/monitoring
     state: directory
     mode: '0755'
 
-- name: Copier docker-compose.yml
+- name: Copier docker-compose.yml depuis un chemin local sur la VM
   copy:
-    src: docker-compose.yml
+    src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files/docker-compose.yml
     dest: /opt/monitoring/docker-compose.yml
 
-- name: Copier prometheus.yml
+- name: Copier prometheus.yml depuis un chemin local sur la VM
   copy:
-    src: prometheus.yml
+    src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files/prometheus.yml
     dest: /opt/monitoring/prometheus.yml
+
 
 - name: Lancer les containers Prometheus et Node Exporter
   community.docker.docker_compose:
