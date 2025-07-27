@@ -25,7 +25,7 @@ variable "vm_admin_username" {
 variable "vm_size" {
   description = "Taille de la VM"
   type        = string
-  default     = "Standard_B1s"
+  default     = "Standard_B1ms"
 }
 
 variable "vm_zone" {
