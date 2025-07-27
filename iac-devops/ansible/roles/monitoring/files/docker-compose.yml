@@ -21,7 +21,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3001:3000"     # Grafana exposé en externe sur le port 3001
+      - "3001:3000"
     volumes:
       - grafana-data:/var/lib/grafana
     environment:
@@ -31,4 +31,3 @@ services:
 
 volumes:
   grafana-data:
-
