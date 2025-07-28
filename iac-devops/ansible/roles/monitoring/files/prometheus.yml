@@ -1,9 +1,8 @@
 global:
-  scrape_interval: 15s  # Intervalle entre chaque collecte
+  scrape_interval: 15s
 
 rule_files:
-  - 'alert.rules.yml'  # Fichier contenant les règles d'alerte
-
+  - /etc/prometheus/alert.rules.yml
 
 scrape_configs:
   - job_name: 'node-exporter'
