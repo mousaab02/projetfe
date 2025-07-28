@@ -1,6 +1,10 @@
 global:
   scrape_interval: 15s  # Intervalle entre chaque collecte
 
+rule_files:
+  - 'alert.rules.yml'  # Fichier contenant les règles d'alerte
+
+
 scrape_configs:
   - job_name: 'node-exporter'
     static_configs:
