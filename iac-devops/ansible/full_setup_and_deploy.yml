@@ -113,17 +113,21 @@
         src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files/prometheus.yml
         dest: /opt/monitoring/prometheus.yml
 
-     - name: Stop and remove existing monitoring containers if they exist
-       shell: docker compose down
-       args:
-         chdir: /opt/monitoring
-       ignore_errors: yes
+    - name: Stop and remove existing monitoring containers if they exist (via docker compose down)
+      shell: docker compose down
+      args:
+        chdir: /opt/monitoring
+      ignore_errors: yes
+
+    - name: Supprimer manuellement les anciens containers si existent
+      shell: |
+        docker rm -f prometheus grafana node-exporter || true
+      ignore_errors: yes
 
     - name: Lancer les containers Prometheus et Node Exporter
       community.docker.docker_compose_v2:
         project_src: /opt/monitoring
         state: present
-
 
 - name: Deploy backend and frontend Docker containers
   hosts: jenkins_vm
