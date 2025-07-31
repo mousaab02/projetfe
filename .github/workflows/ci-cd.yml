@@ -23,13 +23,16 @@ jobs:
     - name: Install backend dependencies
       run: cd backend && npm install
 
+    - name: Audit des dépendances Node.js
+      run: |
+        cd backend
+        npm audit --audit-level=high || true
+
     - name: Run tests
       run: |
         cd backend
         chmod +x ./node_modules/.bin/jest
         npm test -- --detectOpenHandles
-      # continue-on-error: false  # c’est la valeur par défaut donc tu peux l’enlever
-    
 
     - name: SonarCloud Scan
       uses: SonarSource/sonarqube-scan-action@v5
@@ -46,6 +49,22 @@ jobs:
 
     - name: Docker build frontend
       run: docker build -t moulaa22/projetfe-frontend ./frontend
+
+    - name: Scan backend Docker image with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: moulaa22/projetfe-backend
+        format: table
+        exit-code: 0
+        severity: CRITICAL,HIGH
+
+    - name: Scan frontend Docker image with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: moulaa22/projetfe-frontend
+        format: table
+        exit-code: 0
+        severity: CRITICAL,HIGH
 
     - name: DockerHub login
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -66,7 +85,7 @@ jobs:
         script: |
           bash /home/azureuser/projetfe/iac-devops/terraform/deploy_terraform.sh
 
-    # =====Ansible Deployment =====
+    # ===== Ansible Deployment =====
     - name: Deploy with Ansible on Azure VM
       uses: appleboy/ssh-action@v1.0.0
       with:

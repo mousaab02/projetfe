@@ -97,29 +97,36 @@
       shell: ansible-galaxy collection install community.docker
       when: not docker_collection_installed.stat.exists
 
+    - name: Créer un dossier /opt/monitoring sur la VM
+      file:
+        path: /opt/monitoring
+        state: directory
+        mode: '0755'
+
+    - name: Copier docker-compose.yml
+      copy:
+        src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files/docker-compose.yml
+        dest: /opt/monitoring/docker-compose.yml
+
+    - name: Copier prometheus.yml
+      copy:
+        src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files/prometheus.yml
+        dest: /opt/monitoring/prometheus.yml
+
     - name: Stop and remove existing monitoring containers if they exist (via docker compose down)
       shell: docker compose down
       args:
-        chdir: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files
+        chdir: /opt/monitoring
       ignore_errors: yes
 
     - name: Supprimer manuellement les anciens containers si existent
       shell: |
-        docker rm -f prometheus grafana node-exporter loki promtail || true
+        docker rm -f prometheus grafana node-exporter || true
       ignore_errors: yes
-      
-    - name: Remove unused Docker volumes for 'monitoring' project
-      community.docker.docker_volume:
-        state: absent
-        name: "{{ item }}"
-      loop:
-        - monitoring_grafana-data
-        - monitoring_loki_data
-      ignore_errors: yes            
-      
+
     - name: Lancer les containers Prometheus et Node Exporter
       community.docker.docker_compose_v2:
-        project_src: /home/azureuser/projetfe/iac-devops/ansible/roles/monitoring/files
+        project_src: /opt/monitoring
         state: present
 
 - name: Deploy backend and frontend Docker containers
