@@ -23,6 +23,15 @@ jobs:
     - name: Install backend dependencies
       run: cd backend && npm install
 
+    - name: Scan backend filesystem with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: fs
+        scan-ref: ./backend
+        format: table
+        exit-code: 0
+        severity: CRITICAL,HIGH
+
     - name: Audit des dépendances Node.js
       run: |
         cd backend

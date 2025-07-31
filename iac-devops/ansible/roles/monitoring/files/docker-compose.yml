@@ -31,9 +31,11 @@ services:
       - "3001:3000"
     volumes:
       - grafana-data:/var/lib/grafana
+    env_file:
+      - .env
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=Tetouan1234567
+      - GF_AUTH_DISABLE_SIGNOUT_MENU=false
+      - GF_USERS_ALLOW_SIGN_UP=false
     restart: always
 
   loki:
