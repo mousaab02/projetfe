@@ -29,13 +29,15 @@ jobs:
         scan-type: fs
         scan-ref: ./backend
         format: table
-        exit-code: 0
+        # Le pipeline va s'arrêter si des vulnérabilités sont trouvées
+        exit-code: 1
         severity: CRITICAL,HIGH
 
     - name: Audit des dépendances Node.js
       run: |
         cd backend
-        npm audit --audit-level=high || true
+        # La commande échouera si des vulnérabilités sont détectées
+        npm audit --audit-level=high
 
     - name: Run tests
       run: |
@@ -64,7 +66,8 @@ jobs:
       with:
         image-ref: moulaa22/projetfe-backend
         format: table
-        exit-code: 0
+        # Le pipeline va s'arrêter si des vulnérabilités sont trouvées
+        exit-code: 1
         severity: CRITICAL,HIGH
 
     - name: Scan frontend Docker image with Trivy
@@ -72,7 +75,8 @@ jobs:
       with:
         image-ref: moulaa22/projetfe-frontend
         format: table
-        exit-code: 0
+        # Le pipeline va s'arrêter si des vulnérabilités sont trouvées
+        exit-code: 1
         severity: CRITICAL,HIGH
 
     - name: DockerHub login
