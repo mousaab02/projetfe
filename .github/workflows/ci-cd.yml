@@ -3,7 +3,7 @@ name: CI/CD FullStack App
 on:
   push:
     branches:
-      - master  # ou main selon ta branche principale
+      - master  
 
 jobs:
   build-and-deploy:
