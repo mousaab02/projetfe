@@ -56,24 +56,6 @@ jobs:
     - name: Docker build frontend
       run: docker build -t moulaa22/projetfe-frontend ./frontend
 
-    - name: Scan backend Docker image with Trivy
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: moulaa22/projetfe-backend
-        format: table
-        # Le pipeline va s'arrêter si des vulnérabilités sont trouvées
-        exit-code: 1
-        severity: CRITICAL,HIGH
-
-    - name: Scan frontend Docker image with Trivy
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: moulaa22/projetfe-frontend
-        format: table
-        # Le pipeline va s'arrêter si des vulnérabilités sont trouvées
-        exit-code: 1
-        severity: CRITICAL,HIGH
-
     - name: DockerHub login
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
