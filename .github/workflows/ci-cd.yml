@@ -3,7 +3,7 @@ name: CI/CD FullStack App
 on:
   push:
     branches:
-      - master  
+      - master  # ou main selon ta branche principale
 
 jobs:
   build-and-deploy:
@@ -33,6 +33,11 @@ jobs:
         exit-code: 1
         severity: CRITICAL,HIGH
 
+    - name: Audit des dépendances Node.js
+      run: |
+        cd backend
+        # La commande échouera si des vulnérabilités sont détectées
+        npm audit --audit-level=high
 
     - name: Run tests
       run: |
@@ -55,6 +60,24 @@ jobs:
 
     - name: Docker build frontend
       run: docker build -t moulaa22/projetfe-frontend ./frontend
+
+    - name: Scan backend Docker image with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: moulaa22/projetfe-backend
+        format: table
+        # Le pipeline va s'arrêter si des vulnérabilités sont trouvées
+        exit-code: 1
+        severity: CRITICAL,HIGH
+
+    - name: Scan frontend Docker image with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: moulaa22/projetfe-frontend
+        format: table
+        # Le pipeline va s'arrêter si des vulnérabilités sont trouvées
+        exit-code: 1
+        severity: CRITICAL,HIGH
 
     - name: DockerHub login
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
