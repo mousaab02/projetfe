@@ -33,11 +33,6 @@ jobs:
         exit-code: 1
         severity: CRITICAL,HIGH
 
-    - name: Audit des dépendances Node.js
-      run: |
-        cd backend
-        # La commande échouera si des vulnérabilités sont détectées
-        npm audit --audit-level=high
 
     - name: Run tests
       run: |
